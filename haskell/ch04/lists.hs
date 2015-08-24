@@ -27,4 +27,28 @@ splitWith predicate input =
             | predicate x = accumulate (x:acc) xs
             | otherwise = if null acc 
                           then accumulate [] xs
-                          else (reverse acc) : (accumulate [] xs)
+                          else (reverse acc) : (accumulate [] xs)   
+                          
+(|>) x f = f x
+                         
+pickFirst [] = []
+pickFirst ([]:xs) = pickFirst xs
+pickFirst ((x:xs):ys) = x:(pickFirst ys)
+
+dropFirst [] = []
+dropFirst ([]:xs) = []:(dropFirst xs)
+dropFirst ((x:xs):ys) = xs:(dropFirst ys)
+    
+isOnlyEmpty [] = True
+isOnlyEmpty ([]:xs) = isOnlyEmpty xs
+isOnlyEmpty ((x:xs):ys) = False
+
+transLines acc lines =
+    let w = lines |> pickFirst
+        rest = lines |> dropFirst
+    in if (isOnlyEmpty rest) 
+       then (w:acc) |> reverse
+       else transLines (w:acc) rest
+       
+transText text =
+    text |> lines |> transLines [] |> unlines
